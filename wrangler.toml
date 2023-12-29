@@ -4,7 +4,7 @@ compatibility_date = "2023-12-18"
 
 [triggers]
 # every hour
-crons = ["0 * * * *"]
+# crons = ["0 * * * *"]
 
 [[r2_buckets]]
 binding = 'CACHE_DATA' # <~ valid JavaScript variable name
