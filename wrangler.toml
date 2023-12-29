@@ -3,8 +3,6 @@ main = "src/index.ts"
 compatibility_date = "2023-12-18"
 
 [triggers]
-# every hour
-# crons = ["0 * * * *"]
 crons = []
 
 [[r2_buckets]]
