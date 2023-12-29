@@ -3,8 +3,8 @@ main = "src/index.ts"
 compatibility_date = "2023-12-18"
 
 [triggers]
-# every 1 minute
-crons = ["*/1 * * * *"]
+# every hour
+crons = ["0 * * * *"]
 
 [[r2_buckets]]
 binding = 'CACHE_DATA' # <~ valid JavaScript variable name
