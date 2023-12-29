@@ -2,9 +2,10 @@ name = "hackday-cloudflare-serverless"
 main = "src/index.ts"
 compatibility_date = "2023-12-18"
 
-# [triggers]
+[triggers]
 # every hour
 # crons = ["0 * * * *"]
+crons = []
 
 [[r2_buckets]]
 binding = 'CACHE_DATA' # <~ valid JavaScript variable name
