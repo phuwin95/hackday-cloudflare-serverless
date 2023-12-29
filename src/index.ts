@@ -10,7 +10,7 @@
 
 export interface Env {
 	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-	// MY_KV_NAMESPACE: KVNamespace;
+	CACHE_DATA: R2Bucket;
 	//
 	// Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
 	// MY_DURABLE_OBJECT: DurableObjectNamespace;
@@ -27,6 +27,32 @@ export interface Env {
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		return new Response('Hello World!');
+		let frontpageObject = await env.CACHE_DATA?.get('frontpage');
+		let body = frontpageObject?.body;
+		let frontpage: ReadableStream<any> | undefined | string = body;
+
+		if (!body) {
+			frontpage = await this.updateFrontpageKv(env);
+		}
+
+		return new Response(frontpage, {
+			headers: {
+				'content-type': 'text/plain',
+			},
+		});
+	},
+	async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+		await this.updateFrontpageKv(env);
+	},
+	async getFrontpage() {
+		const url = 'https://labrador.seiska.fi/seiska-front-page';
+		const respone = await fetch(url);
+		const text = await respone.text();
+		return text;
+	},
+	async updateFrontpageKv(env: Env) {
+		const frontpage = await this.getFrontpage();
+		await env.CACHE_DATA?.put('frontpage', frontpage);
+		return frontpage;
 	},
 };
